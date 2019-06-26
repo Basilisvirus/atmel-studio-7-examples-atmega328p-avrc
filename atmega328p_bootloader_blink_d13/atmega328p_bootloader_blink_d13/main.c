@@ -10,7 +10,7 @@
 int main(void)
 {
 	//set the bit 5 of the data directory register of PORT B to 1. this indicates that we want to use
-	//the PORT B5 as an output
+	//the PORT B5 as an output. "|" stands as "OR". 
 	DDRB |= 0B00100000;
 
 	while (1)
@@ -18,6 +18,7 @@ int main(void)
 		PORTB |= 0B00100000;
 		_delay_ms(1000); //milliseconds
 		//Clearing bit 5 in PORTB register, the output of bit 5 is set to low.
+		//"&" stands as AND
 		PORTB &= 0B11011111;
 		_delay_ms(1000);
 	}
