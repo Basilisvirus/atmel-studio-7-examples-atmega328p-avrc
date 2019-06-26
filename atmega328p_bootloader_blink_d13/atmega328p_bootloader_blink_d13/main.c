@@ -15,10 +15,10 @@ int main(void)
 
 	while (1)
 	{	//by setting bit 5 of PORTB Register, the output bit 5 is set to high
-		PORTC |= 0B00100000;
+		PORTB |= 0B00100000;
 		_delay_ms(1000); //milliseconds
 		//Clearing bit 5 in PORTB register, the output of bit 5 is set to low.
-		PORTC &= 0B11011111;
+		PORTB &= 0B11011111;
 		_delay_ms(1000);
 	}
 }
