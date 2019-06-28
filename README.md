@@ -5,6 +5,8 @@ By making these examples i assume that you already know how to write assembly co
 
 Notes: 
 
+*How to set up your atmel studio: https://www.youtube.com/watch?v=zEbSQaQJvHI
+
 *If you get toolchain error while building or opening a project, download avr toolchain from their website and install in on your computer.
 
 *Download doxygen via tools/extensions & updates. It will be installed on: 
