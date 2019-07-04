@@ -27,14 +27,14 @@ It may pop you up an error, reccomending you to use : `apt --fix-broken install`
 
 Lets try to compile a simple file. make a file named main.c and paste the following code inside it:
 
-`
+```
 int
 main(void)
 {
 
         while (1);
 }
-`
+```
 
 Right click on the directory (in the same folder) you saved the file, then *open in terminal* and paste: `sudo avr-gcc -Wall -g -Os -mmcu=attiny13 -o main.bin main.c`
 
