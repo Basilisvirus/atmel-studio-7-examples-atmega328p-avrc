@@ -83,7 +83,7 @@ ISR(USART_TX_vect){
 		serialReadPos++;
 		
 		if(serialReadPos >= TX_BUFFER_SIZE){
-			serialReadPos++;
+			serialReadPos=0;
 		}
 	}
 }
