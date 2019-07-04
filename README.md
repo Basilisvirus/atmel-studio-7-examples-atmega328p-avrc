@@ -16,7 +16,7 @@ You will need to install atmel studio.
 *Download doxygen via tools/extensions & updates, it may be usefull. It will be installed on: 
 C:\Users\basil\AppData\Local\Atmel\AtmelStudio\7.0\Extensions\sm3hzemz.snp\Doxygen
 
-<strong>FOR Ubuntu [hope it works for other OSs]</strong>
+<strong>FOR Ubuntu [hope it works for other linux OSs]</strong>
 
 1. Installing avr-gcc and tools:
 
@@ -72,3 +72,7 @@ Let me thank those tutorials, from where i tool all those infos:
 https://blog.podkalicki.com/how-to-compile-and-burn-the-code-to-avr-chip-on-linuxmacosxwindows/
 
 http://www.linuxandubuntu.com/home/setting-up-avr-gcc-toolchain-and-avrdude-to-program-an-avr-development-board-in-ubuntu
+
+Extra: 
+
+How to make your atmea328p-pu standalone: https://github.com/Basilisvirus/Atmega328p-standalone
