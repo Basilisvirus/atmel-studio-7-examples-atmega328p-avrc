@@ -1,5 +1,5 @@
 # atmel-studio-7-examples
-Examples on how to use atmel studio on atmega328p microcontroller, using 'AVR C Library'
+Examples on how to use atmel studio on atmega328p microcontroller, using AVR C Library
 
 By making these examples i assume that you already know the basics of how to write assembly code on any microcontroller (i learned to write on 8051 microcontroller before i started studying avr C to write on atmega micro controller)
 
@@ -21,7 +21,7 @@ C:\Users\basil\AppData\Local\Atmel\AtmelStudio\7.0\Extensions\sm3hzemz.snp\Doxyg
 1. Installing avr-gcc and tools:
 
 *sudo apt-get install gcc-avr avr-libc avrdude*
-It may pop you up an error, reccomending you to use : *apt --fix-broken install*. If it does, type *sudo apt --fix-broken install* and wait for it to finish
+It may pop you up an error, reccomending you to use : `apt --fix-broken install`. If it does, type `sudo apt --fix-broken install` and wait for it to finish
 
 2. Compiling and burning the code:
 
