@@ -60,6 +60,14 @@ Now, in my case i needed to make those changes:
 *sudo avrdude -p m328p -c arduino -U flash:w:main.hex:i -F -P /dev/ttyUSB0*
 
 -Since i use atmega328p, i changed to -p m328p.
+
 -From Arduino IDE (that i have already installed in ubuntu), i found the usb port that my programmer(and atmega) uses. (if you open Arduino IDE its under Tools/port), which was /dev/ttyUSB0.
 
 Hit enter. the program should be uploaded. I remember the first time it poped me an error saying "microcontroller initialized, use -D parameter to avoid it."  Something like that. If that happens, just run the command again, it will work the second time, after the auto-initialization error.
+
+
+Let me thank those tutorials, from where i tool all those infos:
+
+https://blog.podkalicki.com/how-to-compile-and-burn-the-code-to-avr-chip-on-linuxmacosxwindows/
+
+http://www.linuxandubuntu.com/home/setting-up-avr-gcc-toolchain-and-avrdude-to-program-an-avr-development-board-in-ubuntu
