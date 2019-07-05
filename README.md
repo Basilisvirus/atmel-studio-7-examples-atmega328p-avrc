@@ -68,6 +68,13 @@ Now, in my case i needed to make those changes:
 
 Hit enter. the program should be uploaded. I remember the first time it poped me an error saying "microcontroller initialized, use -D parameter to avoid it."  Something like that. If that happens, just run the command again, it will work the second time, after the auto-initialization error.
 
+Summary & a trick:
+
+If you want to compile (twice as needed) the main.c file, and then upload it, using the terminal once, you can run all three commands at terminal, seperatking each command with a semicolon.
+
+```
+avr-gcc -Wall -g -Os -mmcu=atmega328p -o main.bin main.c ; avr-objcopy -j .text -j .data -O ihex main.bin main.hex ; avrdude -p m328p -c arduino -U flash:w:main.hex:i -F -P /dev/ttyUSB0
+```
 
 Let me thank those tutorials, from where i tool all those infos:
 
