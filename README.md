@@ -76,7 +76,7 @@ If you want to compile (twice as needed) the main.c file, and then upload it, us
 avr-gcc -Wall -g -Os -mmcu=atmega328p -o main.bin main.c ; avr-objcopy -j .text -j .data -O ihex main.bin main.hex ; avrdude -p m328p -c arduino -U flash:w:main.hex:i -F -P /dev/ttyUSB0
 ```
 
-Let me thank those tutorials, from where i tool all those infos:
+Let me thank those tutorials, from where i toot all the above steps:
 
 https://blog.podkalicki.com/how-to-compile-and-burn-the-code-to-avr-chip-on-linuxmacosxwindows/
 
