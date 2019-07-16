@@ -67,11 +67,13 @@ Now, in my case i needed to make those changes:
 -From Arduino IDE (that i have already installed in ubuntu), i found the usb port that my programmer(and atmega) uses. (if you open Arduino IDE its under Tools/port), which for me was /dev/ttyUSB0.
 
 Hit enter. the program should be uploaded. I remember the first time it poped me an error saying 
-`avrdude: AVR device initialized and ready to accept instructions.
+```
+avrdude: AVR device initialized and ready to accept instructions.
 
 NOTE: "flash" memory has been specified, an erase cycle will be performed
          To disable this feature, specify the -D option.
-avrdude: erasing chip`
+avrdude: erasing chip
+```
 
 If that happens, just run the command again, it will work the second time, after the auto-initialization error.
 
