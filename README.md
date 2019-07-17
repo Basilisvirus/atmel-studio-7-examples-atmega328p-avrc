@@ -18,10 +18,13 @@ C:\Users\basil\AppData\Local\Atmel\AtmelStudio\7.0\Extensions\sm3hzemz.snp\Doxyg
 
 <strong>FOR Ubuntu [hope it works for other linux OSs]</strong>
 
-1. Installing avr-gcc and tools:
+1. Installing avr-gcc and avrdude:
 
+To install avr-gcc:
 `sudo apt-get install gcc-avr avr-libc avrdude`
-It may pop you up an error, reccomending you to use : `apt --fix-broken install`. If it does, type `sudo apt --fix-broken install` and wait for it to finish
+It may pop you up an error, reccomending you to use : `apt --fix-broken install`. If it does, type `sudo apt --fix-broken install` and wait for it to finish.
+
+Avrdude was already installed in my ubuntu, but you may look it up to see if its installed. If not, install it.
 
 2. Compiling and burning the code:
 
