@@ -1,6 +1,6 @@
 /*
 *Description: How to setup timer interrupt for atmega328p-pu microcontroller. It counts a varialbe adding +1
-every second, and also blinks all ports in portB every second.
+counter overflow, and also blinks all ports in portB every second.
 
 *Special thanks:
 thanks https://www.youtube.com/watch?v=cAui6116XKc&list=PLA6BB228B08B03EDD&index=6 for the tutorial. This is where i got the code.
@@ -25,8 +25,6 @@ All my other tutorials are uploaded: https://github.com/Basilisvirus/atmel-studi
 
 int extraTime = 0;
 int count =0;
-int buffer [30];
-
 
 //=========================For serial monitor START
 #define BUAD 9600
@@ -41,24 +39,25 @@ uint8_t serialWritePos = 0;
 
 void appendSerial(char c);
 void serialWrite(char c[]);
+
+//buffer to save the char 
+int buffer [40];
 //=========================for serial monitor END
-
-
 
 
 int main(void)
 {
 	//Set interrupt mode
-	TCCR0A = (1 << WGM01); //CTC mode (Clear Timer on Compare)
-	
+	TCCR0A |= (1 << WGM01); //CTC mode (Clear Timer on Compare)
+
 	//Set prescaler	
-	TCCR0B =  (1 << CS02) | (1<< CS00); //1024 prescaler set
+	TCCR0B |=  (1<< CS00) | (1 << CS02) ; //1024 prescaler set
 
 	//8-bit value that is continuously compared with the counter value (TCNT0)
 	OCR0A = 156; //Total Timer Ticks, https://eleccelerator.com/avr-timer-calculator/ by setting Real Time in 0.01
 
-	//Enable specific interrupt
-	TIMSK0 = (1 << OCIE0A); //enable TIMSK0 interrupt
+	//Enable specific interrupt (the interrupt that we want to use)
+	TIMSK0 |= (1 << OCIE0A); //enable OCIE0A in TIMSK0 interrupt
 
 	//enable all interrupts
 	SREG |= 0B10000000;
@@ -71,24 +70,24 @@ int main(void)
 	//=========================For Serial monitor START
 	UBRR0H = (BRC >> 8); //Put BRC to UBRR0H and move it right 8 bits.
 	UBRR0L = BRC;
-	UCSR0B = (1 << TXEN0) | (1 << TXCIE0);
-	UCSR0C = (1 << UCSZ01) | (1 << UCSZ00); //8 BIT data frame
+	UCSR0B |= (1 << TXEN0) | (1 << TXCIE0);
+	UCSR0C |= (1 << UCSZ01) | (1 << UCSZ00); //8 BIT data frame
 	//=========================For serial monitor END
 
-
-	while(1)
-	{
-		itoa(count, buffer, 10);
+		itoa(TIMSK0, buffer, 2);
+		serialWrite("TIMSK0 value is ");
 		serialWrite(buffer);
 		serialWrite("\n");
 
+	while(1)
+	{
 		itoa(PORTB, buffer, 2);
 		serialWrite("PORTB value is ");
 		serialWrite(buffer);
 		serialWrite("\n");
 
 		serialWrite("========= \n");
-		
+
 		_delay_ms(1000);
 	}
 }

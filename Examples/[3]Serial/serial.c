@@ -55,6 +55,12 @@ int main(void)
 		serialWrite("Hello\n\r");
 		_delay_ms(1000);
 	}
+
+_delay_ms(5000);
+
+/*One should ALWAYS put a delay in the end of main, if an interrupt is taking place. If there is no delay,
+since program stops executing at the end of main(), it will exit the interrupt even it stays undone. 
+Dont worry about this delay, after all, since it doesnt matter after the end of main(), one may use a large delay.*/
 }
 
 void appendSerial(char c){
