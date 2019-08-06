@@ -1,18 +1,6 @@
-/*
-*Description: How to setup timer interrupt for atmega328p-pu microcontroller, normal mode.
 
-*Special thanks:
-thanks http://ee-classes.usc.edu/ee459/library/documents/avr_intr_vectors/ for the tutorial.
-All my other tutorials are uploaded: https://github.com/Basilisvirus/atmel-studio-7-examples
 
-*Library used: Avr C library, avr-gcc and avrdude
-*Microcontroller: a atmega328p-pu is used here.
-*Atmel version: i dont use atmel here. check https://github.com/Basilisvirus/atmel-studio-7-examples
-*Extra software needed: Arduino ide to see the serial port output on the computer.
-*OS: Ubuntu linux 18
-*/ 
 
-//define the clock frequency of the micro controller for the delay to work correctly, 16Mhz
 #define F_CPU 16000000UL
 
 #include <avr/io.h>
@@ -42,24 +30,32 @@ int buffer [30];
 //=========================for serial monitor END
 
 
-int main(void)
-{
-	//Set interrupt mode
-	TCCR0A = 0B00000000; //Normal mode
+int main (void){
 
-	//Set prescaler
-	TCCR0B |=  (1<< CS00) | (1 << CS02); //1024 prescaler.
+	//select interrupt mode (FAST PWM)
+	TCCR0A |= (1 << WGM01) | (1 << WGM00); 
+	
+	//For some reson, it doesnt work with the second Fast PWM mode, so leave it commented:
+	//TCCR0B = (1 << WGM02); 
+	
+	//Select PWM mode
+	TCCR0A |=  (1 << COM0A1);
+	
+	//No preslacer
+	TCCR0B |= ( 1 << CS00);
 
-	//Interrupt enable
-	TIMSK0 |= (1 << TOIE0);
+	//enable interrupt
+	TIMSK0 |= (1 << TOIE0);	
+	
+	//OCRA top value;
+	OCR0A = 125; //(256/2) - 1
 
-	//enable all interrupts
-	SREG |= 0B10000000;
-	//alternatively, you may use sei(). from <avr/interrupt.h> library.
-	//sei(); //set external interrupt. It sets the I-bit in the Status Register. [Datasheet page 111, Bit 2 ] 
+	//Activate global interrupts
+	SREG |= ( 1 << 7);		
 
-	//If you also need to change the output of a port, 
-	DDRB = 0B00000001; //Setting portB 0x01B as output 
+	
+	//Set port 5 (PD5) as output
+	DDRD |= (1 << PORTD6);
 
 	//=========================For Serial monitor START
 	UBRR0H = (BRC >> 8); //Put BRC to UBRR0H and move it right 8 bits.
@@ -69,30 +65,53 @@ int main(void)
 	//=========================For serial monitor END
 
 
+		itoa(TCCR0A, buffer, 2);
+		serialWrite("TCCR0A value is ");
+		serialWrite(buffer);
+		serialWrite("\n");
+	_delay_ms(500);
+		
+		itoa(TCCR0B, buffer, 2);
+		serialWrite("TCCR0B value is ");
+		serialWrite(buffer);
+		serialWrite("\n");
+	_delay_ms(500);
 
-	
+		itoa(TIMSK0, buffer, 2);
+		serialWrite("TIMSK0 value is ");
+		serialWrite(buffer);
+		serialWrite("\n");
+	_delay_ms(500);
 
-	while(1)
-	{
+		itoa(OCR0A, buffer, 2);
+		serialWrite("OCR0A value is ");
+		serialWrite(buffer);
+		serialWrite("\n");
+	_delay_ms(500);
 
-	}
+		itoa(SREG, buffer, 2);
+		serialWrite("SREG value is ");
+		serialWrite(buffer);
+		serialWrite("\n");
+	_delay_ms(500);
+
+		itoa(DDRD, buffer, 2);
+		serialWrite("DDRD value is ");
+		serialWrite(buffer);
+		serialWrite("\n");
+	_delay_ms(500);
+
+
+while(1){
+	_delay_ms(500);
 }
 
-//Interrupt Service Routine. This is called when the certain interrupt occurs. 
-ISR(TIMER0_OVF_vect){//Timer0, ComparatorA. This interrupt is called a vector
+}
 
-	extraTime++;
-	
-	//no reason that this activates every 100 stacks.
-	if (extraTime > 100){
-
-		serialWrite("interrupt activated ");
-		serialWrite("\n");		
-	
-	extraTime =0;
-	}
+ISR  (TIMER0_OVF_vect){
 
 }
+
 
 //=================================================For serial monitor START
 void appendSerial(char c){
@@ -126,4 +145,9 @@ ISR(USART_TX_vect){
 	}
 }
 //==================================================For Serial Monitor END
+
+
+
+
+
 
