@@ -1,10 +1,9 @@
 /*
-Thanks to : https://www.youtube.com/watch?v=51QJ_WHN7u0 for the tutorial.
+Thanks to : https://www.youtube.com/watch?v=aT1tU0EnSHw for the tutorial.
 
-In this tutorial, we will be reading a value from an analog pin ADC5 and display it to the screen.
+External interrupt setup.
 
 */
-
 
 
 #define F_CPU 16000000UL
@@ -14,7 +13,7 @@ In this tutorial, we will be reading a value from an analog pin ADC5 and display
 
 #include <avr/interrupt.h>
 
-
+int trig =0;
 
 //=========================For serial monitor START
 #define BUAD 9600
@@ -35,41 +34,14 @@ int buffer [30];
 //=========================for serial monitor END
 
 
-void setupADC()
-{
-	//Select voltage reference section
-	ADMUX |= (1 << REFS0); // (AVcc with external capacitor)
-	
-	//Select which ADC pin will be used
-	ADMUX |= (1 << MUX0) | (1 << MUX2); // (ADC5)
-
-	//Left-adjusted values, 10-bit precision. (1024 max)
-	ADMUX |= (1 << ADLAR);
-
-	//Enable ADC
-   ADCSRA |= (1 << ADEN);
-
-	//Enable ADC interrupt
-	ADCSRA |= (1 << ADIE);
-
-	//ADC Prescaler select
-	ADCSRA |= (1 << ADPS0) | (1 << ADPS1) | (1 << ADPS2); //128 prescaler
-   
-	//Disable input digital buffer. So you dont try to read it by mistake and take a digital value. Only analog values.
-	DIDR0 |= (1 << ADC5D);
-     
-    startConversion();
-}
- 
-void startConversion()
-{
-	//Resets every time
-   ADCSRA |= (1 << ADSC);
-}
-
-
 int main(void){
+	
+	//Set PD3 (INT1) as input. ( = 0 )
+	DDRD &= 0B11110111;
 
+	//Enable pull-up resitor of INT1 (PD3)
+	PORTD = 0B00001000;
+	
 	//=========================For Serial monitor START
 	UBRR0H = (BRC >> 8); //Put BRC to UBRR0H and move it right 8 bits.
 	UBRR0L = BRC;
@@ -80,50 +52,43 @@ int main(void){
 	//Enable all interrupts
 	SREG |= (1 << 7);
 
-	setupADC();
-
-	itoa(ADMUX, buffer, 2);
-	serialWrite("ADMUX value is ");
+	itoa(DDRD, buffer, 2);
+	serialWrite("DDRD value is ");
 	serialWrite(buffer);
 	serialWrite("\n");
-	_delay_ms(1500);
+	_delay_ms(1000);
 
-	itoa(ADCSRA, buffer, 2);
-	serialWrite("ADCSRA value is ");
+	itoa(PORTD, buffer, 2);
+	serialWrite("PORTD value is ");
 	serialWrite(buffer);
 	serialWrite("\n");
-	_delay_ms(1500);
+	_delay_ms(1000);
 
-	itoa(DIDR0, buffer, 2);
-	serialWrite("DIDR0 value is ");
-	serialWrite(buffer);
-	serialWrite("\n");
-	_delay_ms(1500);
-	
+	//Mode of external interrupt
+	EICRA |= ( 0 << ISC11) | ( 0 << ISC10); //low level INT1
+
+	//Activate external interrupt
+	EIMSK |= (1 << INT1);
+
 
 	while(1){
-		itoa(ADCL, buffer, 2);		
-		serialWrite("ADCL value is ");
-		serialWrite(buffer);
-		serialWrite("\n");
-
-		itoa(ADCH, buffer, 2);
-		serialWrite("ADCH value is ");
-		serialWrite(buffer);
-		serialWrite("\n");
-
-	_delay_ms(1500);
-
-	}
-
+		if(trig >= 1){
+			itoa(trig, buffer, 10);
+			serialWrite(buffer);
+			serialWrite("\n")	;
+			trig =0;
+		}
+}
 
 }
 
 
-
-ISR(ADC_vect)
-{
-    startConversion();
+ISR(INT1_vect){
+SREG |= (0 << 7);
+trig ++;
+serialWrite("Trig");
+_delay_ms(200);
+SREG |= (1 << 7);
 }
 
 
