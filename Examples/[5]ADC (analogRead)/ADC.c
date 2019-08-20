@@ -52,7 +52,12 @@ void setupADC()
 	//Enable ADC interrupt
 	ADCSRA |= (1 << ADIE);
 
-	//ADC Prescaler select
+//ADC Prescaler select
+/*
+the ADC operates within a frequency range of 50kHz to 200kHz. But 
+the CPU clock frequency is much higher (in the order of MHz). So to achieve it, 
+frequency division must take place
+*/
 	ADCSRA |= (1 << ADPS0) | (1 << ADPS1) | (1 << ADPS2); //128 prescaler
    
 	//Disable input digital buffer. So you dont try to read it by mistake and take a digital value. Only analog values.
