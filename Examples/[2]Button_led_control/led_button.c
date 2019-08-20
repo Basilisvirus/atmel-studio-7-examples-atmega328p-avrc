@@ -2,6 +2,9 @@
 thanks https://www.youtube.com/watch?v=YR4I0G_ILk4 for the tutorial. This is where i got the code.
 I made the comments to be as clear as possible.
 
+In this tutorial, we take the input from a button, and if the button is pressed, the 
+led light up. otherwise, it stays off.
+
 a atmega328p-pu is used here.
  */ 
 
@@ -30,7 +33,7 @@ int main(void)
 		PINx is a register, that automatically gets updated with the port's values on every machine cyrcle.
 		Here, PINB gets port B state continuously. 
 		*/		
-		if(!(PINB & 0x02)){ //if (!(PINB == 1)) aka if (!(PINB == 0B00000010)), meaning if port B1 connects to Ground, we pressed the pin, and we can activate the B0
+		if(!(PINB & 0x02)){ //if (!(PINB == 2)) aka if (!(PINB == 0B00000010)), meaning if port B1 connects to Ground, we pressed the pin, and we can activate the B0
 			PORTB |= 0X01; //turn on B0 using OR so that i wont affect the other bits 
 		}
 		else{
