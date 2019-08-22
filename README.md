@@ -1,7 +1,11 @@
 # atmel-studio-7-examples
-Examples on how to use atmel studio on atmega328p microcontroller, using AVR C Library
+Examples on how to use atmel studio on atmega328p microcontroller, using AVR C Library. Memory map of Atmega328p is also added.
 
 By making these examples i assume that you already know the basics of how to write assembly code on any microcontroller (i learned to write on 8051 microcontroller before i started studying avr C to write on atmega micro controller)
+
+Memory map preview:
+[![libre.jpg](https://i.postimg.cc/x8SxZR5L/libre.jpg)](https://postimg.cc/KkJDktdY)
+
 
 Notes: 
 
