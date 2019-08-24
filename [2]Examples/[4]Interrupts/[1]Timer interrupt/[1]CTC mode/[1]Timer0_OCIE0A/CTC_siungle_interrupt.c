@@ -8,6 +8,8 @@ I made the comments to be as clear as possible. Make sure you always check my pr
 as i wont copy/paste all the same comments from the previous examples.
 All my other tutorials are uploaded: https://github.com/Basilisvirus/atmel-studio-7-examples
 
+Helpfull site: https://eleccelerator.com/avr-timer-calculator/
+
 *Library used: Avr C library, avr-gcc and avrdude
 *Microcontroller: a atmega328p-pu is used here.
 *Atmel version: i dont use atmel here. check https://github.com/Basilisvirus/atmel-studio-7-examples
