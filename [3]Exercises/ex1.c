@@ -24,6 +24,10 @@ Solution:
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
+#include <string.h>
+//#include <stdio.h> 
+#include &lt;string.h&gt;
+
 
 //==================================SERIAL START
 //no semicolon needed at the end of the following lines
@@ -42,9 +46,11 @@ void serialWrite(char c[]);
 //==================================SERIAL END
 
 //tick counter
-int ticks = 0;
+uint8_t ticks = 0;
 
 char str[40];
+
+uint8_t i=7;
 
 
 
@@ -59,6 +65,7 @@ int main(void){
 	sei();
 	//==================================SERIAL END
 
+   //====================SETTING CTC TIMER 1 SEC
    //CTC mode will be used for 1 sec interrupt. From Atmega memory map, TCCR0B will select CTC mode.
    //Looking in the datasheet, Mode 2 is CTC.
    TCCR0A = 0B00000010; //WGM01 =1 , WGM00 =0
@@ -77,15 +84,12 @@ int main(void){
    //Interrupt enable. Using TIMSK0
    TIMSK0 |= (1 << OCIE0A); //Enable Timer0 Match A interrupt.  
    
-
+   //=====================PORTB settings
+   //Setting PORTB as output
+   DDRB = 0B11111111;
 
 	while(1)
 	{
-	   itoa(ticks, str, 10);
-	   
-	   serialWrite(str);
-	   serialWrite("\n");
-	   _delay_ms(1000);
 	}
 
    _delay_ms(5000);
@@ -100,10 +104,25 @@ ISR(TIMER0_COMPA_vect){
    
    ticks ++;
    
-   if (ticks ==  61){
+   if (ticks ==  61){ //every 61 matches, 1 sec passes.
+      
       ticks =0;
       //1 sec passed
-      serialWrite("Hello\n\r");
+      
+      //change PORTB
+      PORTB = (01 << i);
+      
+      i--;
+      
+      if(i == 255){//if i<0 aka i=255
+         i=7;
+      }
+      
+      //Show current state of PORTB
+      itoa(PORTB,str,2);
+      serialWrite(str);
+      serialWrite("\n");
+      
    }
 
 
