@@ -19,17 +19,14 @@ Solution:
 
 */
 
-#define F_CPU 16000000
+//==================================SERIAL START
+#define F_CPU 16000000UL
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
 #include <string.h>
-//#include <stdio.h> 
-#include &lt;string.h&gt;
 
-
-//==================================SERIAL START
 //no semicolon needed at the end of the following lines
 #define BUAD 9600
 #define BRC ((F_CPU/16/BUAD)-1)
@@ -66,7 +63,8 @@ int main(void){
 	//==================================SERIAL END
 
    //====================SETTING CTC TIMER 1 SEC
-   //CTC mode will be used for 1 sec interrupt. From Atmega memory map, TCCR0B will select CTC mode.
+   //CTC mode will be used for 1 sec interrupt. From Atmega memory map, TCCR0B 
+   //will select CTC mode.
    //Looking in the datasheet, Mode 2 is CTC.
    TCCR0A = 0B00000010; //WGM01 =1 , WGM00 =0
    TCCR0B = 0B00000000;  //WGM02 =0
@@ -77,7 +75,8 @@ int main(void){
    //We will use OCR0A Match interrupt (Timer0 Match A Interrupt).
    //From folder[2]Examples/[4]Interrupts/[1]Timer interrupt/[1]CTC mode/[1]Timer0_OCIE0A,
    //we use the link: https://eleccelerator.com/avr-timer-calculator/
-   //With 1 sec at "Real Time (sec):" we get 15625 of total ticks, 61 OV counts and 9 remainder timer ticks.
+   //With 1 sec at "Real Time (sec):" we get 15625 of total ticks, 61 OV counts 
+   //and 9 remainder timer ticks.
    OCR0A = 0B11111111; //TOP.
    
      

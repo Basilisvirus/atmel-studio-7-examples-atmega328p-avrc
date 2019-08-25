@@ -1,22 +1,9 @@
-/*
-*Description: How to setup serial port in atmel studio and atmega328p-pu microcontroller.
+/*EX2: Make an internal interrupt that uses OCR0B for every 0.5 sec.
+This interrupt routine does nothing.
+At the same time, use time use OCR0A for another timer of 1 second
+that also does nothing.
 
-*Special thanks:
-thanks https://www.youtube.com/watch?v=3_omxGIL0kw for the tutorial. This is where i got the code.
-I made the comments to be as clear as possible. Make sure you always check my previous examples on github,
-as i wont copy/paste all the same comments from the previous examples.
-
-*Library used: Avr C library
-*Microcontroller: a atmega328p-pu is used here.
-*Atmel version: Atmel Studio 7 (Version: 7.0.1931 - )
-*Extra software needed: Tera Term to see the serial port output on the computer.
-*OS: Windows 10
-
-Notes: It gives you 2 warning errors when you compile, but it still uploads and runs correctly.
-
- */ 
-
-//define the clock frequency of the micro controller for the delay to work correctly, 16Mhz
+ */
 //==================================SERIAL START
 #define F_CPU 16000000UL
 
@@ -45,6 +32,9 @@ void serialWrite(char c[]);
 char str[40];
 //==================================SERIAL END
 
+uint8_t overFlowA=0;
+uint8_t lastOvA = 0;
+
 int main(void)
 {
 //==================================SERIAL START
@@ -56,21 +46,62 @@ int main(void)
 	//ENABLE interrupts
 	sei();	
 //==================================SERIAL END
+
+	//Set prescaler, /1014 mode
+	TCCR0B |= (1 <<CS02) | (0 << CS01) | (1 << CS00);
+
+	//Enable both vectors A and B
+	TIMSK0 |= (1 << OCIE0B) | (1 << OCIE0A);
+	        
+	//Interrupt mode CTC,  TIMER 0
+	TCCR0B |= (0 << WGM02) ;
 	
+	TCCR0A |= (1 << WGM01) | (0 << WGM00);
+	
+	OCR0A = 255; //after 30Overflows, 132 ticks left.
+	OCR0B = 156; //0.01 sec = 1 match. 100matches = 1 sec
 	
 	while(1)
 	{
-		serialWrite("Hello\n\r");
-		_delay_ms(1000);
+	      //  itoa(OCR0A, str, 2);
+	      //  serialWrite(str);
+	       // serialWrite("\n");
+	      //serialWrite("hello \n");
+		//_delay_ms(1000);
 	}
 
 _delay_ms(5000);
-
-/*One should ALWAYS put a delay in the end of main, if an interrupt is taking place. If there is no delay,
-since program stops executing at the end of main(), it will exit the interrupt even it stays undone. 
-Dont worry about this delay, after all, since it doesnt matter after the end of main(), one may use a large delay.*/
 }
 
+ISR(TIMER0_COMPA_vect){
+	//each match (overflow here) adds +1
+	overFlowA++;
+	      itoa(overFlowA, str, 2);
+	      SerialWrite(str);
+	      serialWrite("\n");
+
+	//last match
+	if(lastOvA == 1){
+		//0.5 sec passed
+		OCR0A = 255;//reset OCR0A
+		overFlowA =0;//Start counting again
+		lastOvA = 0;//last overflow finished
+		serialWrite("0.5");
+	}
+
+
+	if (overFlowA == 30){//after 30 matches(overflows),132 ticks left
+		OCR0A = 132;	
+		lastOvA = 1;//its the last match
+	}
+
+
+
+}
+
+ISR(TIMER0_COMPB_vect){
+
+}
 
 //==================================SERIAL START
 void appendSerial(char c){
@@ -102,6 +133,4 @@ ISR(USART_TX_vect){
 			serialReadPos=0;
 		}
 	}
-}
-//==================================SERIAL END
-
+}//==================================SERIAL END

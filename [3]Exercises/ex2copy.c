@@ -45,6 +45,9 @@ void serialWrite(char c[]);
 char str[40];
 //==================================SERIAL END
 
+uint8_t overFlowA=0;
+uint8_t lastOvA = 0;
+
 int main(void)
 {
 //==================================SERIAL START
@@ -56,11 +59,27 @@ int main(void)
 	//ENABLE interrupts
 	sei();	
 //==================================SERIAL END
+
+	//Set prescaler, /1014 mode
+	TCCR0B |= (1 <<CS02) | (0 << CS01) | (1 << CS00);
+
+	//Enable both vectors A and B
+	TIMSK0 |= (1 << OCIE0B) | (1 << OCIE0A);
+	        
+	//Interrupt mode CTC,  TIMER 0
+	TCCR0B |= (0 << WGM02) ;
 	
+	TCCR0A |= (1 << WGM01) | (0 << WGM00);
+	
+	OCR0A = 255; //after 30Overflows, 132 ticks left.
+	OCR0B = 156; //0.01 sec = 1 match. 100matches = 1 sec
 	
 	while(1)
 	{
-		serialWrite("Hello\n\r");
+	        itoa(OCR0A, str, 2);
+	        serialWrite(str);
+	        serialWrite("\n");
+	      //serialWrite("hello \n");
 		_delay_ms(1000);
 	}
 
@@ -70,6 +89,14 @@ _delay_ms(5000);
 since program stops executing at the end of main(), it will exit the interrupt even it stays undone. 
 Dont worry about this delay, after all, since it doesnt matter after the end of main(), one may use a large delay.*/
 }
+
+
+ISR(TIMER0_COMPA_vect){
+}
+
+ISR(TIMER0_COMPB_vect){
+}
+
 
 
 //==================================SERIAL START
