@@ -63,22 +63,21 @@ int main(void)
 	
 	while(1)
 	{
-	      //  itoa(OCR0A, str, 2);
-	      //  serialWrite(str);
-	       // serialWrite("\n");
-	      //serialWrite("hello \n");
-		//_delay_ms(1000);
+		//itoa(overFlowA, str, 2);
+		//serialWrite(str);
+		//serialWrite("\n");
+		//_delay_ms(500);
 	}
 
 _delay_ms(5000);
 }
 
 ISR(TIMER0_COMPA_vect){
-	//each match (overflow here) adds +1
-	overFlowA++;
-	      itoa(overFlowA, str, 2);
-	      SerialWrite(str);
-	      serialWrite("\n");
+		//each match (overflow here) adds +1
+		overFlowA++;
+		//itoa(overFlowA, str, 2);
+		//serialWrite(str);
+		//serialWrite("\n");
 
 	//last match
 	if(lastOvA == 1){
@@ -87,6 +86,7 @@ ISR(TIMER0_COMPA_vect){
 		overFlowA =0;//Start counting again
 		lastOvA = 0;//last overflow finished
 		serialWrite("0.5");
+		serialWrite("\n");
 	}
 
 
@@ -95,13 +95,13 @@ ISR(TIMER0_COMPA_vect){
 		lastOvA = 1;//its the last match
 	}
 
+} //TIMER0_COMPA_vect end
 
-
-}
 
 ISR(TIMER0_COMPB_vect){
+	
+} //TIMER0_COMPB_vect end
 
-}
 
 //==================================SERIAL START
 void appendSerial(char c){

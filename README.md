@@ -47,7 +47,7 @@ Right click on the directory (in the same folder) you saved the file, then *open
 
 Now on the above code, you may need to change the 'attiny13' into the name of your atmega microcontroller. in my case, 'atmega328p'
 
-Hit enter. Your main.c should be compiled, and you should see another file in the same folder, called main.bin
+Hit enter. Your main.c should be compiled, and you should see another file in the same folder, called 'main.bin'.
 
 After performing successful compilation, you can check program and data memory size with this command: `avr-size -C main.bin`
 
@@ -59,7 +59,7 @@ You should see a third file, called 'main.hex' in the same folder.
 
 4. Burning
 
-Connect your board to usb. I use an FTDI basic to program my atmega328p, but i think using an Arduino board will work as well, the same.
+Connect your board to usb. I use an FTDI basic to program my atmega328p. Using an Aduino board will work as well, the same.
 
 With the command below, the file main.hex will be burned into the flash memory. The -p attiny13 option lets avrdude know that we are operating on an ATtiny13 chip. In other words – this option specifies the device. The full list of supported parts can be found here:  https://www.nongnu.org/avrdude/user-manual/avrdude_4.html. Note that full-length names are also acceptable (i.e. t13 equals attiny13).
 
@@ -92,6 +92,22 @@ If you want to compile (twice as needed) the main.c file, and then upload it, us
 avr-gcc -Wall -g -Os -mmcu=atmega328p -o main.bin main.c ; avr-objcopy -j .text -j .data -O ihex main.bin main.hex ; avrdude -p m328p -c arduino -U flash:w:main.hex:i -F -P /dev/ttyUSB0
 ```
 
+Later on, you may need to use the serial port to debug your program (on my examples i have a code for serialWrite command). If you have arduino IDE installed, you can use its Serial Monitor, and see the output of yout atmega from there. If not, or you want to use the terminal (a more professional way) to check the serial, you can run:
+`sudo cat /dev/ttyUSB0` , and it will show you the output of the usb port ttyUSB0. Your port might be different from ttyUSB0. If you want to see the ports, run the command `ls /dev/`. Your port will be some of the ttyUSBxx options. After you succeed, you may notice that sometimes, the port wont work when you `sudo cat /dev/ttyUSB0`, because it is "stuck", and the output will output.. nothing. If that happens, you will need to unplug and plug again the usb, and start the `sudo cat /dev/ttyUSB0` again. But there is another option, to 'unplug and plug' it programatically.
+
+To do that we first need to find our driver that will help us 'unplug and plug' the usb. Type: `ls /sys/bus/usb/drivers` which should print something like this: `btusb  ftdi_sio  hub  usb  usbfs  usbhid  usbserial_generic  uvcvideo`. These, are all the drivers for each usb device. Now, obviously mine is `ftdi_sio` , since i use ftdi to program my atmega328p. I am not sure how arduino board would show up.
+Now, you can see the driver's commands using:
+`ls /sys/bus/usb/drivers/ftdi_sio/`, which will print something like: `1-4:1.0  bind  module  uevent  unbind`, Where `1-4:1.0` is the device's characteristic code, and the `bind` and `unbind` command, which are the 'plug' and 'unplug' command respectively.
+
+Now, if i want to unplug programatically the ftdi usb port, i will type:
+`echo -n "1-4:1.0" > /sys/bus/usb/drivers/ftdi_sio/unbind`
+and, to plug it again:
+`echo -n "1-4:1.0" > /sys/bus/usb/drivers/ftdi_sio/bind`
+
+Now, we can combine all the commands together, so that everytime we want to see the atmega's serial monitor, we first unplug the device, then plug it again to make sure it wont stuck, and then open the serial communication.
+`echo -n "1-4:1.0" > /sys/bus/usb/drivers/ftdi_sio/unbind ; echo -n "1-4:1.0" > /sys/bus/usb/drivers/ftdi_sio/bind ; sudo cat /dev/ttyUSB0`
+
+
 Let me thank those tutorials, from where i toot all the above steps:
 
 https://blog.podkalicki.com/how-to-compile-and-burn-the-code-to-avr-chip-on-linuxmacosxwindows/
@@ -101,3 +117,9 @@ http://www.linuxandubuntu.com/home/setting-up-avr-gcc-toolchain-and-avrdude-to-p
 Extra: 
 
 How to make your atmea328p-pu standalone: https://github.com/Basilisvirus/Atmega328p-standalone
+
+
+
+
+
+
