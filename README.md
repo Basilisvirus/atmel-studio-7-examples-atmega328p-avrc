@@ -100,8 +100,10 @@ Now, you can see the driver's commands using:
 `ls /sys/bus/usb/drivers/ftdi_sio/`, which will print something like: `1-4:1.0  bind  module  uevent  unbind`, Where `1-4:1.0` is the device's characteristic code, and the `bind` and `unbind` command, which are the 'plug' and 'unplug' command respectively.
 
 Now, if i want to unplug programatically the ftdi usb port, i will type:
+
 `echo -n "1-4:1.0" > /sys/bus/usb/drivers/ftdi_sio/unbind`
 and, to plug it again:
+
 `echo -n "1-4:1.0" > /sys/bus/usb/drivers/ftdi_sio/bind`
 
 Now, we can combine all the commands together, so that everytime we want to see the atmega's serial monitor, we first unplug the device, then plug it again to make sure it wont stuck, and then open the serial communication.
