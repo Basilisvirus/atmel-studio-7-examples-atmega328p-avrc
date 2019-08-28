@@ -92,7 +92,7 @@ ISR(TIMER0_COMPA_vect){//Timer0, ComparatorA. This interrupt is called a vector
 	extraTime++;
 	
 	//Every 100 repeations, 1 sec passes
-	if (extraTime > 100){
+	if (extraTime >= 100){
 	extraTime =0;
 	
 	//And, if you want change the state of the led.
@@ -105,7 +105,6 @@ ISR(TIMER0_COMPA_vect){//Timer0, ComparatorA. This interrupt is called a vector
 
 		serialWrite("========= \n");
 
-		_delay_ms(1000);
 	}
 
 }

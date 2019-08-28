@@ -41,6 +41,7 @@ void serialWrite(char c[]);
 
 //buffer to save the char 
 int buffer [40];
+int x =1;
 //=========================for serial monitor END
 
 
@@ -57,11 +58,12 @@ int main(void)
 	TCCR0B |=  (1<< CS00) | (1 << CS02) ; //1024 prescaler set
 
 	//8-bit value that is continuously compared with the counter value (TCNT0)
-	OCR0A = 156; //Total Timer Ticks, https://eleccelerator.com/avr-timer-calculator/ by setting Real Time in 0.01
+	OCR0A = 255; //Total Timer Ticks, https://eleccelerator.com/avr-timer-calculator/ by setting Real Time in 0.01
+	OCR0B = 255;
 
 	//Enable specific interrupt (the interrupt that we want to use)
 	TIMSK0 |= (1 << OCIE0A); //enable OCIE0A in TIMSK0 interrupt
-	//TIMSK0 |= (1 << OCIE0B); //enable OCIE0B in TIMSK0 interrupt
+	TIMSK0 |= (1 << OCIE0B); //enable OCIE0B in TIMSK0 interrupt
 
 	//enable all interrupts
 	SREG |= 0B10000000;
@@ -78,11 +80,9 @@ int main(void)
 	UCSR0C |= (1 << UCSZ01) | (1 << UCSZ00); //8 BIT data frame
 	//=========================For serial monitor END
 
-
 	while(1)
 	{
 
-		_delay_ms(1000);
 	}
 }
 
@@ -92,28 +92,27 @@ ISR(TIMER0_COMPA_vect){//Timer0, ComparatorA. This interrupt is called a vector
 
 	extraTime++;
 	
-	if (extraTime >= 100){
-
-		serialWrite("Compa \n");
-	
-	extraTime =0;
+	if (extraTime == 100){
+		serialWrite("1 match passed OCR0A\n\r");
+		extraTime =0;
 	}
 
 }
 
 
-/*ISR(TIMER0_COMPB_vect){//Timer0, ComparatorB. This interrupt is called a vector
+ISR(TIMER0_COMPB_vect){//Timer0, ComparatorB. This interrupt is called a vector
 
 	extraTime2++;
 	
-	if (extraTime2 >= 100){
+	if (extraTime2 >= 61){
+	serialWrite("1 sec passed OCR0B\n\r");
 
-		serialWrite("CompB \n");
+		//serialWrite("CompB \n");
 	
 	extraTime2 =0;
 	}
 
-}*/
+}
 
 //=================================================For serial monitor START
 void appendSerial(char c){

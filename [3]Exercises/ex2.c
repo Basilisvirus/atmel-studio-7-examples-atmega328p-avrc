@@ -56,56 +56,30 @@ int main(void)
 
 	
 	//Set prescaler, /1014 mode
-	TCCR0B |= (1 <<CS02) | (0 << CS01) | (1 << CS00);
-
-	//Enable both vectors A and B
-	TIMSK0 |= (1 << OCIE0B); // | (1 << OCIE0A);
-	       
+	TCCR0B |= (1 <<CS02) | (0 << CS01) | (1 << CS00);	       
 	
-	//OCR0A = 255; //[0.5 sec] after 30Overflows, 132 ticks left.
+	OCR0A = 255; //[0.5 sec] after 30 Overflows, 132 ticks left.
 	OCR0B = 156; //[1 sec] 0.01 sec = 1 match. 100matches = 1 sec
 
-		_delay_ms(500);	
-		serialWrite("TCCR0B is ");
-		itoa(TCCR0B, str, 2);
-		serialWrite(str);
-		serialWrite("\n");
-		
-		serialWrite("TCCR0A is ");
-		itoa(TCCR0A, str, 2);
-		serialWrite(str);
-		serialWrite("\n");
-		
-		serialWrite("TIMSK0 is ");
-		itoa(TIMSK0, str, 2);
-		serialWrite(str);
-		serialWrite("\n");
 
 
+	//Enable both vectors A and B
+	TIMSK0 |= (1 << OCIE0B) | (1 << OCIE0A);
 
 			
 	
 	while(1)
 	{
-/*		serialWrite("TCNT0 is ");
-		itoa(TCNT0, str, 2);
-		serialWrite(str);
-		serialWrite("\n");
-	_delay_ms(40); */	
+	
 	}
 
-_delay_ms(5000);
 }
 
 
-/*
+
 ISR(TIMER0_COMPA_vect){
 	
-	//each match (overflow here) adds +1
 	overFlowA++;
-	//itoa(overFlowA, str, 2);
-	//serialWrite(str);
-	//serialWrite("\n");
 
 	//last match
 	if(lastOvA == 1){
@@ -113,35 +87,28 @@ ISR(TIMER0_COMPA_vect){
 		OCR0A = 255;//reset OCR0A
 		overFlowA =0;//Start counting again
 		lastOvA = 0;//last overflow finished
-		//serialWrite("0.5");
-		//serialWrite("\n");
+		//serialWrite("0.5\n");
 	}
 
 	if (overFlowA == 30){//after 30 matches(overflows),132 ticks left
-		OCR0A = 132;	
+		OCR0A = 132;
 		lastOvA = 1;//its the last match
 	}
 	
 
 
 } //TIMER0_COMPA_vect end
-*/
+
 
 
 ISR(TIMER0_COMPB_vect){
 
 	overFlowB++;
-	
-	serialWrite("OVB is ");
-	itoa(overFlowB, str, 10);
-	serialWrite(str);
-	serialWrite("\n");
+	OCR0B = OCR0B +156;
 		
-		
-	if(overFlowB >= 100){
+	if(overFlowB == 100){
 		overFlowB = 0;
-		serialWrite("1");
-		serialWrite("\n");
+		serialWrite("1\n");
 	}
 } //TIMER0_COMPB_vect end
 
