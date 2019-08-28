@@ -8,8 +8,6 @@ I made the comments to be as clear as possible. Make sure you always check my pr
 as i wont copy/paste all the same comments from the previous examples.
 All my other tutorials are uploaded: https://github.com/Basilisvirus/atmel-studio-7-examples
 
-Helpfull site: https://eleccelerator.com/avr-timer-calculator/
-
 *Library used: Avr C library, avr-gcc and avrdude
 *Microcontroller: a atmega328p-pu is used here.
 *Atmel version: i dont use atmel here. check https://github.com/Basilisvirus/atmel-studio-7-examples
@@ -25,8 +23,7 @@ Helpfull site: https://eleccelerator.com/avr-timer-calculator/
 
 #include <avr/interrupt.h>
 
-int extraTime = 0;
-int count =0;
+int extraTime = 0, 	extraTime2 =0;
 
 //=========================For serial monitor START
 #define BUAD 9600
@@ -50,7 +47,11 @@ int buffer [40];
 int main(void)
 {
 	//Set interrupt mode
-	TCCR0A |= (1 << WGM01); //CTC mode (Clear Timer on Compare)
+	//Since we want to compare the timer with both OCR0A and OCR0B, we will use normal mode. If CTC mode is
+	//used, then with the first compare (either OCR0A or OCR0B, the TCNT0 will reset, and the second OCR0X
+	//will never get a match.
+	TCCR0A |= (0 << WGM01) | (0 << WGM00); //Normal mode
+	TCCR0B |= (0 << WGM02);
 
 	//Set prescaler	
 	TCCR0B |=  (1<< CS00) | (1 << CS02) ; //1024 prescaler set
@@ -60,6 +61,7 @@ int main(void)
 
 	//Enable specific interrupt (the interrupt that we want to use)
 	TIMSK0 |= (1 << OCIE0A); //enable OCIE0A in TIMSK0 interrupt
+	//TIMSK0 |= (1 << OCIE0B); //enable OCIE0B in TIMSK0 interrupt
 
 	//enable all interrupts
 	SREG |= 0B10000000;
@@ -76,40 +78,42 @@ int main(void)
 	UCSR0C |= (1 << UCSZ01) | (1 << UCSZ00); //8 BIT data frame
 	//=========================For serial monitor END
 
-		itoa(TIMSK0, buffer, 2);
-		serialWrite("TIMSK0 value is ");
-		serialWrite(buffer);
-		serialWrite("\n");
 
 	while(1)
 	{
-		itoa(PORTB, buffer, 2);
-		serialWrite("PORTB value is ");
-		serialWrite(buffer);
-		serialWrite("\n");
-
-		serialWrite("========= \n");
 
 		_delay_ms(1000);
 	}
 }
 
 //Interrupt Service Routine. This is called when the certain interrupt occurs. 
+
 ISR(TIMER0_COMPA_vect){//Timer0, ComparatorA. This interrupt is called a vector
 
 	extraTime++;
 	
-	//Every 100 repeations, add +1 to var count
-	if (extraTime > 100){
-	count++;
-	
-	//And, if you want change the state of the led.
-	PORTB ^= 0B11111111; //XOR Equal " ^= " [ebery time, it changes portb from 00H to FFH]
+	if (extraTime >= 100){
+
+		serialWrite("Compa \n");
 	
 	extraTime =0;
 	}
 
 }
+
+
+/*ISR(TIMER0_COMPB_vect){//Timer0, ComparatorB. This interrupt is called a vector
+
+	extraTime2++;
+	
+	if (extraTime2 >= 100){
+
+		serialWrite("CompB \n");
+	
+	extraTime2 =0;
+	}
+
+}*/
 
 //=================================================For serial monitor START
 void appendSerial(char c){

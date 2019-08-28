@@ -32,7 +32,7 @@ void serialWrite(char c[]);
 char str[40];
 //==================================SERIAL END
 
-uint8_t overFlowA=0;
+uint8_t overFlowA=0, overFlowB=0;
 uint8_t lastOvA = 0;
 
 int main(void)
@@ -47,37 +47,65 @@ int main(void)
 	sei();	
 //==================================SERIAL END
 
+	//Set interrupt mode
+	//Since we want to compare the timer with both OCR0A and OCR0B, we will use normal mode. If CTC mode is
+	//used, then with the first compare (either OCR0A or OCR0B, the TCNT0 will reset, and the second OCR0X
+	//will never get a match.
+	TCCR0A |= (0 << WGM01) | (0 << WGM00); //Normal mode
+	TCCR0B |= (0 << WGM02);
+
+	
 	//Set prescaler, /1014 mode
 	TCCR0B |= (1 <<CS02) | (0 << CS01) | (1 << CS00);
 
 	//Enable both vectors A and B
-	TIMSK0 |= (1 << OCIE0B) | (1 << OCIE0A);
-	        
-	//Interrupt mode CTC,  TIMER 0
-	TCCR0B |= (0 << WGM02) ;
+	TIMSK0 |= (1 << OCIE0B); // | (1 << OCIE0A);
+	       
 	
-	TCCR0A |= (1 << WGM01) | (0 << WGM00);
-	
-	OCR0A = 255; //after 30Overflows, 132 ticks left.
-	OCR0B = 156; //0.01 sec = 1 match. 100matches = 1 sec
+	//OCR0A = 255; //[0.5 sec] after 30Overflows, 132 ticks left.
+	OCR0B = 156; //[1 sec] 0.01 sec = 1 match. 100matches = 1 sec
+
+		_delay_ms(500);	
+		serialWrite("TCCR0B is ");
+		itoa(TCCR0B, str, 2);
+		serialWrite(str);
+		serialWrite("\n");
+		
+		serialWrite("TCCR0A is ");
+		itoa(TCCR0A, str, 2);
+		serialWrite(str);
+		serialWrite("\n");
+		
+		serialWrite("TIMSK0 is ");
+		itoa(TIMSK0, str, 2);
+		serialWrite(str);
+		serialWrite("\n");
+
+
+
+			
 	
 	while(1)
 	{
-		//itoa(overFlowA, str, 2);
-		//serialWrite(str);
-		//serialWrite("\n");
-		//_delay_ms(500);
+/*		serialWrite("TCNT0 is ");
+		itoa(TCNT0, str, 2);
+		serialWrite(str);
+		serialWrite("\n");
+	_delay_ms(40); */	
 	}
 
 _delay_ms(5000);
 }
 
+
+/*
 ISR(TIMER0_COMPA_vect){
-		//each match (overflow here) adds +1
-		overFlowA++;
-		//itoa(overFlowA, str, 2);
-		//serialWrite(str);
-		//serialWrite("\n");
+	
+	//each match (overflow here) adds +1
+	overFlowA++;
+	//itoa(overFlowA, str, 2);
+	//serialWrite(str);
+	//serialWrite("\n");
 
 	//last match
 	if(lastOvA == 1){
@@ -85,21 +113,36 @@ ISR(TIMER0_COMPA_vect){
 		OCR0A = 255;//reset OCR0A
 		overFlowA =0;//Start counting again
 		lastOvA = 0;//last overflow finished
-		serialWrite("0.5");
-		serialWrite("\n");
+		//serialWrite("0.5");
+		//serialWrite("\n");
 	}
-
 
 	if (overFlowA == 30){//after 30 matches(overflows),132 ticks left
 		OCR0A = 132;	
 		lastOvA = 1;//its the last match
 	}
+	
+
 
 } //TIMER0_COMPA_vect end
+*/
 
 
 ISR(TIMER0_COMPB_vect){
+
+	overFlowB++;
 	
+	serialWrite("OVB is ");
+	itoa(overFlowB, str, 10);
+	serialWrite(str);
+	serialWrite("\n");
+		
+		
+	if(overFlowB >= 100){
+		overFlowB = 0;
+		serialWrite("1");
+		serialWrite("\n");
+	}
 } //TIMER0_COMPB_vect end
 
 
