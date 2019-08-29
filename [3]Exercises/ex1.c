@@ -1,7 +1,7 @@
 
 /*
-EX1: Make an interrupt of every 1 second. In its route handle, it will roll a '1' to the right on PORTB. When the '1' reaches the end 
-of PORTB, it wil begin again from the start.
+EX1: Make an interrupt of every 1 second. In its route handle, it will roll a '1' to the right on PORTB. When the 
+'1' reaches the end of PORTB, it wil begin again from the start.
 example of PORTB:
 10000000
 01000000

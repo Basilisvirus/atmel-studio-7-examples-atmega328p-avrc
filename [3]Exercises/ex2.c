@@ -1,6 +1,6 @@
-/*EX2: Make an internal interrupt that uses OCR0B for every 0.5 sec.
+/*EX2: Make an internal interrupt that uses OCR0B for every 1 sec.
 This interrupt routine does nothing.
-At the same time, use time use OCR0A for another timer of 1 second
+At the same time, use time use OCR0A for another timer of 0.5 second
 that also does nothing.
 
  */

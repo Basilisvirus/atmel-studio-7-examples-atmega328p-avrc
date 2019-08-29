@@ -13,7 +13,7 @@ External interrupt setup.
 
 #include <avr/interrupt.h>
 
-int trig =0;
+
 
 //=========================For serial monitor START
 #define BUAD 9600
@@ -33,6 +33,7 @@ void serialWrite(char c[]);
 int buffer [30];
 //=========================for serial monitor END
 
+int trig =0;
 
 int main(void){
 	
@@ -84,11 +85,11 @@ int main(void){
 
 
 ISR(INT1_vect){
-SREG |= (0 << 7);
-trig ++;
-serialWrite("Trig");
-_delay_ms(200);
-SREG |= (1 << 7);
+	SREG |= (0 << 7); //prevent more interrupts
+	trig ++;
+	serialWrite("Trig");
+	_delay_ms(200);
+	SREG |= (1 << 7);
 }
 
 
