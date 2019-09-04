@@ -73,6 +73,7 @@ int main(void){
 
 
 	while(1){
+		//Count the triggered times
 		if(trig >= 1){
 			itoa(trig, buffer, 10);
 			serialWrite(buffer);

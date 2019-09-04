@@ -68,7 +68,7 @@ frequency division must take place
  
 void startConversion()
 {
-	//Resets every time
+	//Resets every time (write to this bit to start conversion)
    ADCSRA |= (1 << ADSC);
 }
 
@@ -126,7 +126,7 @@ int main(void){
 
 
 
-ISR(ADC_vect)
+ISR(ADC_vect)// too fast for serialwrite here
 {
     startConversion();
 }

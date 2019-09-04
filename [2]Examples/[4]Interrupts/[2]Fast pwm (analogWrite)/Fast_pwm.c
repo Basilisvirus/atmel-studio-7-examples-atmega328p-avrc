@@ -1,6 +1,4 @@
 
-
-
 #define F_CPU 16000000UL
 
 #include <avr/io.h>
@@ -54,7 +52,7 @@ int main (void){
 	SREG |= ( 1 << 7);		
 
 	
-	//Set port 5 (PD5) as output
+	//Set port 6 (PD6) as output
 	DDRD |= (1 << PORTD6);
 
 	//=========================For Serial monitor START
@@ -103,7 +101,6 @@ int main (void){
 
 
 while(1){
-	_delay_ms(500);
 }
 
 }
