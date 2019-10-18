@@ -6,9 +6,6 @@
 
 #include <avr/interrupt.h>
 
-int extraTime = 0;
-
-
 //=========================For serial monitor START
 #define BUAD 9600
 #define BRC ((F_CPU/16/BUAD)-1)
