@@ -1,6 +1,5 @@
 /*
-Testing the stepper motor, connection 5.0
-
+Slave
 */
 
 //define the clock frequency of the micro controller for the delay to work correctly, 16Mhz
