@@ -30,9 +30,9 @@ void serialWrite(char c[]);
 
 //for numbers
 char str[40];
-//==================================SERIAL TX END
+//==================================SERIAL TX END===========
 
-//==================================SERIAL RX START
+//==================================SERIAL RX START=========
 #define RX_BUFFER_SIZE  128
 char rxBuffer[RX_BUFFER_SIZE];
 
@@ -41,9 +41,9 @@ uint8_t rxWritePos = 0;
 
 char getChar(void);
 char peekChar(void);
-//==================================SERIAL RX END
+//==================================SERIAL RX END===========
 
-//==================================Functions
+//==================================TWI Functions===========
 void TWI_Init(){
 	TWBR = 0x00; //Clear status register
 	TWBR = 0x0C; //Set bit rate

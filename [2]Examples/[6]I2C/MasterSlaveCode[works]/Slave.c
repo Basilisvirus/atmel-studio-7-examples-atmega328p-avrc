@@ -42,11 +42,11 @@ char getChar(void);
 char peekChar(void);
 //==================================SERIAL RX END
 
-//==================================Variables
+//==================================TWI Variables=================================
 unsigned char x;
 
 
-//==================================Functions
+//==================================Functions=====================================
 void TWI_Init(unsigned char Slave_Addr){
 	TWAR = Slave_Addr;
 }
