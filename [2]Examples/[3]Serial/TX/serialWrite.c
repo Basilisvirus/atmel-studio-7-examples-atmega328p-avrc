@@ -26,7 +26,7 @@ Notes: It gives you 2 warning errors when you compile, but it still uploads and 
 #include <avr/interrupt.h>
 #include <string.h>
 
-
+//=====================TX START========================
 //no semicolon needed at the end of the following lines
 #define BUAD 9600
 #define BRC ((F_CPU/16/BUAD)-1)
@@ -64,11 +64,6 @@ int main(void)
 		_delay_ms(1000);
 	}
 
-_delay_ms(5000);
-
-/*One should ALWAYS put a delay in the end of main, if an interrupt is taking place. If there is no delay,
-since program stops executing at the end of main(), it will exit the interrupt even it stays undone. 
-Dont worry about this delay, after all, since it doesnt matter after the end of main(), one may use a large delay.*/
 }
 
 
