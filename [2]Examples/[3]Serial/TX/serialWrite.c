@@ -50,7 +50,7 @@ int main(void)
 //==================================SERIAL START
 	UBRR0H = (BRC >> 8); //Put BRC to UBRR0H and move it right 8 bits.
 	UBRR0L = BRC;
-	UCSR0B = (1 << TXEN0) | (1 << TXCIE0);
+	UCSR0B = (1 << TXEN0) | (1 << TXCIE0); //Trans enable and interrupt enable
 	UCSR0C = (1 << UCSZ01) | (1 << UCSZ00); //8 BIT data frame
 	
 	//ENABLE interrupts
@@ -81,13 +81,15 @@ void serialWrite(char c[]){
 	for (uint8_t i=0; i< strlen(c); i++){
 		appendSerial(c[i]);
 	}
-	if (UCSR0A & (1 << UDRE0)){
-		UDR0 = 0; //send an off character	
+	if (UCSR0A & (1 << UDRE0)){ //if UDRE0 is 1 (buffer empty and ready to be written)
+		UDR0 = 0; //(USART I/O Data Register) send an off character to the computer 
+					//this will activate the interrupt ISR(USART_TX_vect).
 	}
 }
 
 //set up the interrupt vector 
-//This interrupt gets triggered when the transmitting (sending data) is done
+//This interrupt gets triggered when the transmitting (sending data) is done,
+//but we use it to send data.
 ISR(USART_TX_vect){
 	if(serialReadPos != serialWritePos){
 		UDR0 = serialBuffer[serialReadPos];
